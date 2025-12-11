@@ -1,0 +1,3 @@
+patient,sample_type,sample_file,hpo
+123,blood,/path/to/file.vcf.gz,HP:000123
+456,saliva,/path/to/file.vcf.gz,HP:000456
