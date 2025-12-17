@@ -8,7 +8,7 @@
         "type": "object",
         "properties": {
             "patient": {
-                "type": "string",
+                "type": ["string", "integer"],
                 "errorMessage": "Patient code must be provided and cannot contain spaces",
                 "meta": ["id"]
             },

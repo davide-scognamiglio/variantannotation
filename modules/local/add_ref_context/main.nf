@@ -25,6 +25,9 @@ process ADD_REF_CONTEXT {
             --input ${maf} \
             --output ${meta.patient}.raw.maf \
             --fasta "/data/vep_data/reference_genome/${params.build}.fa" \
-            --window 10
+            --window 10 \
+            --chrom_col "Chromosome" \
+            --pos_col "Start_Position"
         """
 }
+
