@@ -15,10 +15,16 @@ process DOWNLOAD_ALPHAMISSENSE {
 
     script:
     """
+    URL="https://storage.googleapis.com/dm_alphamissense/AlphaMissense_${params.build}.tsv.gz"
+    OUT=\$(basename "\$URL")
+
     mkdir -p AlphaMissense
     cd AlphaMissense
-    wget https://storage.googleapis.com/dm_alphamissense/AlphaMissense_${params.build}.tsv.gz
-	tabix -s 1 -b 2 -e 2 -f -S 1 AlphaMissense_${params.build}.tsv.gz
+
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
+    tabix -s 1 -b 2 -e 2 -f -S 1 "\$OUT"
+
     cd ..
     """
 }

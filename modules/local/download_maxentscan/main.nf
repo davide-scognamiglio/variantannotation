@@ -17,9 +17,11 @@ process DOWNLOAD_MAXENTSCAN {
     """
     mkdir -p MaxEntScan
     cd MaxEntScan
-    wget http://hollywood.mit.edu/burgelab/maxent/download/fordownload.tar.gz
-    tar -xvzf fordownload.tar.gz
-    rm fordownload.tar.gz
+
+    URL="https://github.com/matthdsm/MaxEntScan/archive/refs/heads/master.zip"
+    OUT="fordownload.zip"
+    wget \$URL -O \$OUT
+    unzip fordownload.zip
     cd ..
     """
 }

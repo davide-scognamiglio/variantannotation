@@ -16,7 +16,14 @@ process DOWNLOAD_ENFORMER {
     script:
     """
     mkdir -p Enformer
-    wget -P Enformer https://ftp.ensembl.org/pub/current_variation/Enformer/enformer_grch38.vcf.gz
-    wget -P Enformer https://ftp.ensembl.org/pub/current_variation/Enformer/enformer_grch38.vcf.gz.tbi
+
+    URL="https://ftp.ensembl.org/pub/current_variation/Enformer/enformer_grch38.vcf.gz"
+    OUT="enformer_grch38.vcf.gz"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+    
+    URL="https://ftp.ensembl.org/pub/current_variation/Enformer/enformer_grch38.vcf.gz.tbi"
+    OUT="enformer_grch38.vcf.gz.tbi"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
     """
 }

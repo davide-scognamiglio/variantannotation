@@ -17,8 +17,9 @@ process DOWNLOAD_DBSCSNV {
     """
     mkdir -p dbscSNV
     cd dbscSNV
-    wget https://usf.box.com/shared/static/ffwlywsat3q5ijypvunno3rg6steqfs8
-    mv ffwlywsat3q5ijypvunno3rg6steqfs8 dbscSNV1.1.zip
+    URL="https://usf.box.com/shared/static/ffwlywsat3q5ijypvunno3rg6steqfs8"
+    OUT="dbscSNV1.1.zip"
+    wget \$URL -O \$OUT
     unzip dbscSNV1.1.zip
     head -n1 dbscSNV1.1.chr1 > h
     cat dbscSNV1.1.chr* | grep -v ^chr | sort -k5,5 -k6,6n | cat h - | awk '\$5 != "."' | bgzip -c > dbscSNV1.1_GRCh38.txt.gz

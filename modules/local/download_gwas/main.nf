@@ -17,7 +17,11 @@ process DOWNLOAD_GWAS {
     """
     mkdir -p GWAS
     cd GWAS
-    wget -O gwas.zip "https://www.ebi.ac.uk/gwas/api/search/downloads/associations/v1.0?split=false"
+
+    URL="https://www.ebi.ac.uk/gwas/api/search/downloads/associations/v1.0?split=false"
+    OUT="gwas.zip"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
     unzip gwas.zip
     rm gwas.zip 
     cd ..

@@ -17,8 +17,15 @@ process DOWNLOAD_SPLICEVAULT {
     """
     mkdir -p SpliceVault
     cd SpliceVault
-    wget https://ftp.ensembl.org/pub/current_variation/SpliceVault/SpliceVault_data_GRCh38.tsv.gz
-    wget https://ftp.ensembl.org/pub/current_variation/SpliceVault/SpliceVault_data_GRCh38.tsv.gz.tbi
+
+    URL="https://ftp.ensembl.org/pub/current_variation/SpliceVault/SpliceVault_data_GRCh38.tsv.gz"
+    OUT="SpliceVault_data_GRCh38.tsv.gz"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
+    URL="https://ftp.ensembl.org/pub/current_variation/SpliceVault/SpliceVault_data_GRCh38.tsv.gz.tbi"
+    OUT="SpliceVault_data_GRCh38.tsv.gz.tbi"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
     cd ..
     """
 }

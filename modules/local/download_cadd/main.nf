@@ -15,8 +15,16 @@ process DOWNLOAD_CADD {
 
     script:
     """
-    mkdir -p CADD
-    wget -P CADD https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh38/whole_genome_SNVs.tsv.gz
-    wget -P CADD https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh38/whole_genome_SNVs.tsv.gz.tbi
+    mkdir CADD
+    cd CADD
+    URL="https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh38/whole_genome_SNVs.tsv.gz"
+    OUT=\$(basename "\$URL")
+    bash download_and_check.sh https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh38/whole_genome_SNVs.tsv.gz 0.1 wget \$OUT
+
+    URL="https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh38/whole_genome_SNVs.tsv.gz.tbi"
+    OUT=\$(basename "\$URL")
+    bash download_and_check.sh https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh38/whole_genome_SNVs.tsv.gz.tbi 0.1 wget \$OUT
+    
+    cd ..
     """
 }

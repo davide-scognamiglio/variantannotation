@@ -23,10 +23,11 @@ def extract_csv(csv_file) {
         .splitCsv(header:true)
         .map { row ->
             def meta = [
-                patient    : row.patient,
-                sample_type: row.sample_type,
-                sample_file: row.sample_file,
-                hpo        : row.hpo
+                patient     : row.patient,
+                sample_type : row.sample_type,
+                sample_file : row.sample_file,
+                hpo         : row.hpo,
+                panel       : row.panel
             ]
             [meta, row.sample_file]
         }

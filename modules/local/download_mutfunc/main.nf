@@ -17,7 +17,11 @@ process DOWNLOAD_MUTFUNC {
     """
     mkdir -p mutfunc
     cd mutfunc
-    wget https://ftp.ensembl.org/pub/current_variation/mutfunc/mutfunc_data.db
+
+    URL="https://ftp.ensembl.org/pub/current_variation/mutfunc/mutfunc_data.db"
+    OUT="mutfunc_data.db"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
     cd ..
     """
 }

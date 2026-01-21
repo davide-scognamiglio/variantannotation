@@ -17,7 +17,11 @@ process DOWNLOAD_UTRANNOTATOR {
     """
     mkdir -p UTRannotator
     cd UTRannotator
-    wget https://raw.githubusercontent.com/Ensembl/UTRannotator/master/uORF_5UTR_GRCh38_PUBLIC.txt
+
+    URL="https://raw.githubusercontent.com/Ensembl/UTRannotator/master/uORF_5UTR_GRCh38_PUBLIC.txt"
+    OUT="uORF_5UTR_GRCh38_PUBLIC.txt"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
     cd ..
     """
 }

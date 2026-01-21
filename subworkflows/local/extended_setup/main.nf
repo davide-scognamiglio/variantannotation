@@ -9,6 +9,7 @@ include { DOWNLOAD_EVE } from '../../../modules/local/download_eve'
 include { DOWNLOAD_GWAS } from '../../../modules/local/download_gwas'
 include { DOWNLOAD_MAVEDB } from '../../../modules/local/download_mavedb'
 include { DOWNLOAD_MAXENTSCAN } from '../../../modules/local/download_maxentscan'
+include { DOWNLOAD_MUTFUNC } from '../../../modules/local/download_mutfunc'
 include { DOWNLOAD_PHENOTYPEORTHOLOGOUS } from '../../../modules/local/download_phenotypeorthologous'
 include { DOWNLOAD_PHENOTYPES } from '../../../modules/local/download_phenotypes'
 include { DOWNLOAD_PLI } from '../../../modules/local/download_pli'
@@ -18,22 +19,24 @@ include { DOWNLOAD_UTRANNOTATOR } from '../../../modules/local/download_utrannot
 
 workflow EXTENDED_SETUP {
 
-    main:
+    // main:
+        // # TESTED ✔
         DOWNLOAD_ALPHAMISSENSE()
         DOWNLOAD_ANCESTRALALLELE()
         DOWNLOAD_CADD()
-        DOWNLOAD_CLINPRED()
+        DOWNLOAD_CLINPRED() // gdown is not supported by download_and_check.sh script !
         DOWNLOAD_DBNSFP()
-        DOWNLOAD_DBSCSNV()
+        DOWNLOAD_DBSCSNV() // issue, content-length missing !
         DOWNLOAD_ENFORMER()
-        DOWNLOAD_EVE()
+        DOWNLOAD_EVE() // issue, content-length missing !
         DOWNLOAD_GWAS()
         DOWNLOAD_MAVEDB()
-        DOWNLOAD_MAXENTSCAN()
+        DOWNLOAD_MAXENTSCAN() // wget github repo -> content-length missing !
+        DOWNLOAD_MUTFUNC()
         DOWNLOAD_PHENOTYPEORTHOLOGOUS()
         DOWNLOAD_PHENOTYPES()
         DOWNLOAD_PLI()
-        DOWNLOAD_REFERENCEQUALITY()
+        DOWNLOAD_REFERENCEQUALITY() // issue, content-length not parsed !
         DOWNLOAD_SPLICEVAULT()
         DOWNLOAD_UTRANNOTATOR()
 }

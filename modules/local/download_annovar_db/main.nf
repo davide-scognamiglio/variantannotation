@@ -15,40 +15,43 @@ process DOWNLOAD_ANNOVAR_DB{
 
     script:
     """
-    mkdir renovo_humandb
+      set -euo pipefail
+
+    mkdir -p renovo_humandb
     cd renovo_humandb
 
-    # refGene
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_refGene.txt.gz
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_refGeneMrna.fa.gz
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_refGeneVersion.txt.gz
+    BASE_URL="http://www.openbioinformatics.org/annovar/download"
 
-    # ensGene
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_ensGene.txt.gz
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_ensGeneMrna.fa.gz
+    BUILD="${params.build}"
+    TOLERANCE=0.1   # 10% size tolerance
+    METHOD="wget"
 
-    # avsnp151
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_avsnp150.txt.gz
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_avsnp150.txt.idx.gz
+    FILES=(
+        "\${BUILD}_refGene.txt.gz"
+        "\${BUILD}_refGeneMrna.fa.gz"
+        "\${BUILD}_refGeneVersion.txt.gz"
+        "\${BUILD}_ensGene.txt.gz"
+        "\${BUILD}_ensGeneMrna.fa.gz"
+        "\${BUILD}_avsnp150.txt.gz"
+        "\${BUILD}_avsnp150.txt.idx.gz"
+        "\${BUILD}_gnomad211_exome.txt.gz"
+        "\${BUILD}_gnomad211_exome.txt.idx.gz"
+        "\${BUILD}_dbnsfp35c.txt.gz"
+        "\${BUILD}_dbnsfp35c.txt.idx.gz"
+        "\${BUILD}_intervar_20180118.txt.gz"
+        "\${BUILD}_intervar_20180118.txt.idx.gz"
+        "\${BUILD}_clinvar_20250721.txt.gz"
+        "\${BUILD}_clinvar_20250721.txt.idx.gz"
+    )
 
-    # gnomad41_exome
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_gnomad211_exome.txt.gz
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_gnomad211_exome.txt.idx.gz
+    for f in "\${FILES[@]}"; do
+        FULL_URL="\$BASE_URL/\$f"
+        OUT=\$(basename "\$FULL_URL")
+        bash download_and_check.sh "\$FULL_URL" \$TOLERANCE \$METHOD \$OUT
+    done
 
-    # dbnsfp42c
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_dbnsfp35c.txt.gz
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_dbnsfp35c.txt.idx.gz
+    gunzip -f *.gz
 
-    # intervar_20250721
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_intervar_20180118.txt.gz
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_intervar_20180118.txt.idx.gz
-
-    # clinvar_20250721
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_clinvar_20250721.txt.gz
-    wget --verbose http://www.openbioinformatics.org/annovar/download/${params.build}_clinvar_20250721.txt.idx.gz
-    
-    gunzip *.gz
-    
     cd ..
     """    
 }

@@ -18,7 +18,11 @@ process DOWNLOAD_REFGENOME{
     echo ${params.http_proxy}
     mkdir reference_genome
     cd reference_genome
-    wget --no-check-certificate https://hgdownload.soe.ucsc.edu/goldenpath/${params.build}/bigZips/${params.build}.fa.gz 
+
+    URL="https://hgdownload.soe.ucsc.edu/goldenpath/${params.build}/bigZips/${params.build}.fa.gz"
+    OUT="${params.build}.fa.gz"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
     # Create .dict using GATK (Picard)
     gunzip ${params.build}.fa.gz
 
@@ -28,7 +32,6 @@ process DOWNLOAD_REFGENOME{
         -R ${params.build}.fa \
         -O ${params.build}.dict
 
-    
     cd ..
     """
 }

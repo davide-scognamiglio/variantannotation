@@ -17,8 +17,10 @@ process DOWNLOAD_EVE {
     """
     mkdir -p EVE
     cd EVE
-    wget https://evemodel.org/api/proteins/bulk/download/
-    mv index.html download.zip
+
+    URL="https://evemodel.org/api/proteins/bulk/download/"
+    OUT="download.zip"
+    wget \$URL -O \$OUT
     unzip download.zip -d download/
     DATA_FOLDER=download/vcf_files_missense_mutations/
     OUTPUT_NAME=eve_merged.vcf

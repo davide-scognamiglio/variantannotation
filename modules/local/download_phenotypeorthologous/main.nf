@@ -17,8 +17,15 @@ process DOWNLOAD_PHENOTYPEORTHOLOGOUS {
     """
     mkdir -p PhenotypeOrthologous
     cd PhenotypeOrthologous
-    wget https://ftp.ensembl.org/pub/current_variation/PhenotypeOrthologous/PhenotypesOrthologous_homo_sapiens_112_GRCh38.gff3.gz
-    wget https://ftp.ensembl.org/pub/current_variation/PhenotypeOrthologous/PhenotypesOrthologous_homo_sapiens_112_GRCh38.gff3.gz.tbi
+
+    URL="https://ftp.ensembl.org/pub/current_variation/PhenotypeOrthologous/PhenotypesOrthologous_homo_sapiens_112_GRCh38.gff3.gz"
+    OUT="PhenotypesOrthologous_homo_sapiens_112_GRCh38.gff3.gz"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
+    URL="https://ftp.ensembl.org/pub/current_variation/PhenotypeOrthologous/PhenotypesOrthologous_homo_sapiens_112_GRCh38.gff3.gz.tbi"
+    OUT="PhenotypesOrthologous_homo_sapiens_112_GRCh38.gff3.gz.tbi"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
     cd ..
     """
 }

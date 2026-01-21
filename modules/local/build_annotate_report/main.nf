@@ -28,6 +28,6 @@ process BUILD_ANNOTATE_REPORT {
 
     script:
         """
-        annotate_reporter.R "${meta.patient}.raw.maf" "${meta.patient}" "${params.workflow}" "${params.use_vep_plugins}" "${params.offline}"
+        annotate_reporter.R "${meta.patient}" "${params.workflow}" "${params.use_vep_plugins}" "${params.offline}" "${params.skip_genebe}"
         """
 }

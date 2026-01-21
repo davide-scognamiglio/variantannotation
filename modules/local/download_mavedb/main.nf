@@ -17,8 +17,15 @@ process DOWNLOAD_MAVEDB {
     """
     mkdir -p MaveDB
     cd MaveDB
-    wget https://ftp.ensembl.org/pub/current_variation/MaveDB/MaveDB_variants.tsv.gz
-    wget https://ftp.ensembl.org/pub/current_variation/MaveDB/MaveDB_variants.tsv.gz.tbi
+
+    URL="https://ftp.ensembl.org/pub/current_variation/MaveDB/MaveDB_variants.tsv.gz"
+    OUT="MaveDB_variants.tsv.gz"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
+    URL="https://ftp.ensembl.org/pub/current_variation/MaveDB/MaveDB_variants.tsv.gz.tbi"
+    OUT="MaveDB_variants.tsv.gz.tbi"
+    bash download_and_check.sh \$URL 0.1 wget \$OUT
+
     cd ..
     """
 }

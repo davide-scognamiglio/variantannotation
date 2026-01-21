@@ -21,9 +21,23 @@ process FILTER_VARIANTS {
         file("${meta.patient}.filtered.maf")
         file("${meta.patient}.raw.maf")
 
-
     script:
         """
-        variants_filter.R "${maf}" "${meta.patient}" "${meta.hpo}" "${params.offline}"
+        panel="/data/panels/${params.panel}.csv"
+
+        if [[ ! -f "\$panel" ]]; then
+            echo "ERROR: Panel file not found: \$panel" >&2
+            exit 1
+        fi
+
+        variants_filter.R \
+            "${maf}" \
+            "${meta.patient}" \
+            "${meta.hpo}" \
+            "${params.offline}" \
+            "\$panel" \
+            ${params.max_freq} \
+            ${params.drop_benign}
         """
+
 }

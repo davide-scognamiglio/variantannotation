@@ -15,23 +15,59 @@ suppressPackageStartupMessages({
 
     
 args <- commandArgs(trailingOnly = TRUE)
-if(length(args) < 4) stop("Usage: Rscript html_reporter.R input.maf patient_code workflow use_vep_plugins=BOOL offline=BOOL")
 
-input_maf <- args[1]
-patient_code <- args[2]
-workflow <- args[3]
-use_vep_plugins <- args[4]
-offline <- args[5]
+if(length(args) < 5) stop("Usage: Rscript html_reporter.R patient_code workflow use_vep_plugins=BOOL offline=BOOL skip_genebe=BOOL")
 
+patient_code <- args[1]
+workflow <- args[2]
+use_vep_plugins <- args[3]
+offline <- args[4]
+skip_genebe <- args[5]
 
-# safe read: if file is not a strict MAF, maftools can still often read it
-maf_df <- tryCatch({
-  read.table(input_maf, sep='\t', header=TRUE, quote='', comment.char='', fill=TRUE,
-             stringsAsFactors=FALSE, check.names=FALSE)
-}, error = function(e) {
-  stop("Failed to read MAF: ", conditionMessage(e))
-})
-maf_df <- maf_df[, !duplicated(colnames(maf_df))]
+# ---- MAF discovery logic ----
+filtered_maf <- paste0(patient_code, ".filtered.maf")
+raw_maf <- paste0(patient_code, ".raw.maf")
+
+read_maf_safe <- function(path) {
+  if (!file.exists(path)) return(NULL)
+  
+  df <- tryCatch(
+    read.table(
+      path,
+      sep = '\t',
+      header = TRUE,
+      quote = '',
+      comment.char = '',
+      fill = TRUE,
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    ),
+    error = function(e) NULL
+  )
+  
+  if (is.null(df)) return(NULL)
+  
+  # header-only MAF: zero rows
+  if (nrow(df) == 0) return("HEADER_ONLY")
+  
+  df
+}
+
+maf_df <- read_maf_safe(filtered_maf)
+
+if (identical(maf_df, "HEADER_ONLY")) {
+  message("Filtered MAF contains only header, falling back to raw MAF")
+  maf_df <- read_maf_safe(raw_maf)
+}
+
+if (is.null(maf_df)) {
+  stop("Neither filtered nor raw MAF could be read for patient: ", patient_code)
+}
+
+if (identical(maf_df, "HEADER_ONLY")) {
+  stop("Both filtered and raw MAF contain only headers for patient: ", patient_code)
+}
+maf_df <- maf_df[, !duplicated(colnames(maf_df))] 
 var_types <- unique(maf_df$Variant_Classification)
 # ----- Build maftools object -----
 required_cols <- c(
@@ -119,7 +155,7 @@ if (toupper(offline) == "FALSE") {
     "MAX_AF",
     "MAX_AF_POPS"
   )
-} else {
+} else if(toupper(offline) == "TRUE" | toupper(skip_genebe) == "TRUE") {
   main_cols <- c(
     "Hugo_Symbol",
     "genome_change",
