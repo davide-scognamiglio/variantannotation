@@ -7,7 +7,7 @@
 
 process VEP_ANNOTATE_VCF {
     tag "vep-annotation"
-    cpus 1
+    cpus params.n_core
     errorStrategy 'retry'
     maxRetries 3
     memory { 8.GB * task.attempt }

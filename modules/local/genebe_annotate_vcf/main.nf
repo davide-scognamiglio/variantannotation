@@ -24,7 +24,7 @@ process GENEBE_ANNOTATE_VCF {
         echo "Running GeneBe annotation..."
 
         genebe annotate --input $vcf --output ${meta.patient}.genebe_annotation.vcf \\
-            --username ${params.gb_user} --api_key ${params.gb_api_key} \\
+            --username ${params.gb_user} --api_key ${params.gb_api_key}  \\
             --omit_basic --omit_advanced --omit_csq --omit_ensembl
         """
 }
