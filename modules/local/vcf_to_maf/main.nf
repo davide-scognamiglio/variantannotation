@@ -19,18 +19,24 @@ process VCF_TO_MAF {
 
     script:
         """
-        awk 'BEGIN{OFS="\\t"}
-            /^#/ {print; next}
+        awk 'BEGIN{OFS="\t"}
+            /^#/ {print; next}  # print header lines as-is
             {
-              if (\$1 !~ /^chr/)
-                 \$1 = "chr"\$1
-                 print
+                # Normalize mitochondrial chromosome
+                if (\$1 == "chrMT" || \$1 == "MT") \$1 = "chrM"
+
+                # Add "chr" prefix to numeric or X/Y chromosomes if missing
+                if (\$1 !~ /^chr/) \$1 = "chr"\$1
+
+                print
             }' ${vcf} > ${vcf.simpleName}.with_chr.vcf
+
+            mv ${vcf.simpleName}.with_chr.vcf ${vcf}
 
         export REF_FASTA=/data/vep_data/reference_genome/${params.build}.fa
 
         perl /opt/vcf2maf.pl \
-            --input-vcf ${vcf.simpleName}.with_chr.vcf \
+            --input-vcf ${vcf} \
             --output-maf ${meta.patient}.tmp.maf \
             --ref-fasta \$REF_FASTA \
             --inhibit-vep

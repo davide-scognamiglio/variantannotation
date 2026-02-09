@@ -10,3 +10,6 @@ output/
 musa_output/
 OUTPUT_TEST/
 OUTPUT/
+VALIDATION_OUTPUT/
+CLINVAR/
+PAPER/
