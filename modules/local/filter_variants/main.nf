@@ -23,12 +23,7 @@ process FILTER_VARIANTS {
 
     script:
         """
-        panel="/data/panels/${params.panel}.csv"
-
-        if [[ ! -f "\$panel" ]]; then
-            echo "ERROR: Panel file not found: \$panel" >&2
-            exit 1
-        fi
+        panel="/${params.data_dir}/panels/${params.panel}.csv"
 
         variants_filter.R \
             "${maf}" \

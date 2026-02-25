@@ -34,7 +34,9 @@ build_gene_panel <- function(panel_file = NULL,
                              offline = FALSE) {
 
   panel_genes <- character(0)
-
+  if (!is.null(panel_file) && !is.na(panel_file) && toupper(panel_file) == "NULL") {
+    panel_file <- NULL
+  }
   # 1. Static panel
   if (!is.null(panel_file)) {
     print("PANEL FILE IS NOT NULL!")
