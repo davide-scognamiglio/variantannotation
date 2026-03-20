@@ -1,13 +1,11 @@
 <h1>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/images/nf-core-variantannotation_logo_dark.png">
-    <img alt="nf-core/variantannotation" src="docs/images/nf-core-variantannotation_logo_light.png">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/MuSA_logo_dark.png">
+    <img alt="MuSA" src="docs/images/MuSA_logo_light.png">
   </picture>
 </h1>
 
-[![Open in GitHub Codespaces](https://img.shields.io/badge/Open_In_GitHub_Codespaces-black?labelColor=grey&logo=github)](https://github.com/codespaces/new/nf-core/variantannotation)
-[![GitHub Actions CI Status](https://github.com/nf-core/variantannotation/actions/workflows/nf-test.yml/badge.svg)](https://github.com/nf-core/variantannotation/actions/workflows/nf-test.yml)
-[![GitHub Actions Linting Status](https://github.com/nf-core/variantannotation/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/variantannotation/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/variantannotation/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
+[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
 [![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.04.0-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
@@ -15,22 +13,35 @@
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
-[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/nf-core/variantannotation)
+[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/MuSA)
 
-[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23variantannotation-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/variantannotation)[![Follow on Bluesky](https://img.shields.io/badge/bluesky-%40nf__core-1185fe?labelColor=000000&logo=bluesky)](https://bsky.app/profile/nf-co.re)[![Follow on Mastodon](https://img.shields.io/badge/mastodon-nf__core-6364ff?labelColor=FFFFFF&logo=mastodon)](https://mstdn.science/@nf_core)[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
 
 ## Introduction
 
-**nf-core/variantannotation** is a scalable and modular bioinformatics pipeline for comprehensive variant annotation. It integrates multiple industry-standard annotation tools and external databases to produce an ultra-deep annotated MAF (Mutation Annotation Format) file, along with an interactive HTML report for visual inspection and downstream interpretation.
+**MuSA (MUlti-Source variant Annotation)** is an nf-core-oriented Nextflow pipeline that provides a fully automated, end-to-end framework for variant interpretation.
+Based on the findings in the sources, MuSA offers several innovations that distinguish it from, and in many aspects make is superior to, existing tools:
+Automated Resource Management: MuSA eliminates the manual effort and reproducibility issues
+inherent in standalone VEP or ANNOVAR workflows by fully automating the setup of annotation
+resources, including 20 curated VEP plugins and the full dbNSFP distribution.
+
+- *Advanced VUS Reclassification:* A standout feature of MuSA is its integration of the RENOVO machine-learning model. 
+By applying a novel linear transformation to RENOVO scores, the pipeline actively shifts
+Variants of Uncertain Significance (VUS) toward actionable pathogenic or benign extremes—a capability
+not typically found in standard automated pipelines.
+
+- *Dual-Output for AI Research and Clinical Review:* Unlike lighter clinical reporting tools, MuSA generates
+deeply annotated, AI-ready MAF files containing up to 950 annotation columns, systematically
+organized for deep computational research. Simultaneously, it produces interactive HTML reports with
+HPO-matched gene panels, streamlining results for clinical teams.
+
+- *Superior Clinical Utility vs. Broad Pipelines:* While broad pipelines like MuSA/sarek focus on processing
+breadth, MuSA is uniquely dedicated to annotation completeness. It specifically addresses the
+"unsuitable verbosity" of default VEP outputs by focusing on MANE transcript selection and HPO-driven
+filtering to ensure results are diagnostic-ready.
+
 
 The pipeline takes as input a samplesheet referencing raw (unannotated) VCF files and outputs consolidated annotation files suitable for clinical research, reporting, or input to downstream workflows.
 If Human Phenotype Ontology (HPO) terms are provided for individual patients, an additional phenotype-prioritized MAF is generated using HPO-based gene panel filtering.
-
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
 
 ![Pipeline schema](assets/pipeline_schema.jpg)
 
@@ -57,6 +68,18 @@ If Human Phenotype Ontology (HPO) terms are provided for individual patients, an
 - **`--skip_bcftools`**  
   Allows user to skip the bcftools-based pre-processing of vcf files.
 
+- **`--offline`**  
+  If true, no external API call will be performed.
+
+- **`--drop_benign`**  
+  If true, all variants reported as "benign" or "likely benign" in Clinvar will be dropped in the filtered MAF file.
+
+- **`--max_freq`**  
+  Optional maximum population frequency threshold. If null, no variant will be dropped based on frequency.
+
+- **`--panel`**  
+  Optional panel name to be used in the last filtering step.
+  
 #### Genebe parameters *(required when `--offline false`)*
 
 - **`--gb_user`**  
@@ -67,6 +90,8 @@ If Human Phenotype Ontology (HPO) terms are provided for individual patients, an
 
 - **`--http_proxy`**, **`--https_proxy`**  
   Proxy settings, only if required by your system.
+
+  
 
 
 #### VEP and plugin parameters
@@ -87,14 +112,16 @@ If Human Phenotype Ontology (HPO) terms are provided for individual patients, an
   Directory containing the annovar software folder (path/to/annovar).
 
 
-## Usage
-
-> [!NOTE]
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
+## Getting started
 
 ### 1a. Setup
 
-Before annotating any dataset, the pipeline requires a **setup step** to download the minimal required databases and reference files. This ensures the pipeline can run correctly. ADDITIONAL NOTE: user have to get access to an ANNOVAR license and download link and install it.
+Before annotating any dataset, the pipeline requires a **setup step** to download the minimal required databases and reference files. This ensures the pipeline can run correctly. 
+**Important:** Users must independently obtain access to an ANNOVAR license, download the software from the official source, and install it according to its licensing terms.
+
+**Licensing and data usage notice:**  
+Users must independently obtain access to an ANNOVAR license, download the software from the official source, and install it according to its licensing terms.
+While we provide a link to download the *dbNSFP academic* database for convenience, users are solely responsible for complying with its license terms. In particular, dbNSFP academic is restricted to **non-commercial use**, and any usage must adhere to the conditions specified by its authors. Ensure that your use case is compliant before downloading and integrating the resource.
 
 Run the setup workflow:
 
@@ -151,39 +178,25 @@ nextflow run main.nf \
   --outdir <OUTDIR>
 ```
 
-For more details and further functionality, please refer to the [usage documentation](https://nf-co.re/variantannotation/usage) and the [parameter documentation](https://nf-co.re/variantannotation/parameters).
-
 ## Pipeline output
 
-To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/variantannotation/results) tab on the nf-core website pipeline page.
-For more details about the output files and reports, please refer to the
-[output documentation](https://nf-co.re/variantannotation/output).
+MuSA generates two complementary outputs: comprehensive MAF files for computational analysis and interactive HTML reports for clinical interpretation.
+
+*MAF files* contain up to ~950 annotation columns per variant, including population frequencies (e.g. gnomAD, TOPMed), pathogenicity predictions (e.g. REVEL, CADD, AlphaMissense), splicing scores (e.g. SpliceAI), clinical annotations (e.g. ClinVar, OMIM), gene constraint metrics, ACMG/AMP evidence, and RENOVO pathogenicity scores.
+
+*HTML reports* provide an interactive overview with: (i) a summary panel (patient metadata and variant counts), (ii) a sortable/filterable variant table with key annotations, and (iii) maftools-based visualizations (e.g. mutation distributions, oncoplots, Ti/Tv ratios).
 
 ## Credits
 
-nf-core/variantannotation was written by D. Scognamiglio at IRCCS Istituto Ortopedico Rizzoli, Bologna, Italy.
+MuSA was written by D. Scognamiglio at IRCCS Istituto Ortopedico Rizzoli, Bologna, Italy.
 
 We thank E. Bonetti for his extensive assistance in the development of this pipeline.
 
-## Contributions and Support
-
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
-
-For further information or help, don't hesitate to get in touch on the [Slack `#variantannotation` channel](https://nfcore.slack.com/channels/variantannotation) (you can join with [this invite](https://nf-co.re/join/slack)).
-
 ## Citations
 
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use nf-core/variantannotation for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+<!-- If you use MuSA for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
-You can cite the `nf-core` publication as follows:
-
-> **The nf-core framework for community-curated bioinformatics pipelines.**
->
-> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
->
-> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).
+You can cite the `MuSA` publication as follows:
+...
