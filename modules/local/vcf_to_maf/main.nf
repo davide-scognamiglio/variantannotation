@@ -15,28 +15,39 @@ process VCF_TO_MAF {
         tuple val(meta), file(vcf)
 
     output:
-        tuple val(meta), file(vcf), file("${meta.patient}.maf")
+        tuple val(meta), file("${meta.patient}.maf")
 
     script:
-        """
-        awk 'BEGIN{OFS="\t"}
-            /^#/ {print; next}  # print header lines as-is
+         """
+        set -euo pipefail
+
+        # Get base name of input file
+        base=\$(basename "${vcf}")
+
+        # Conditional decompress if gzipped
+        if [[ "\$base" == *.gz ]]; then
+            gunzip -c "${vcf}" > "\${base%.gz}.vcf"
+            vcf_file="\${base%.gz}.vcf"
+        else
+            vcf_file="\$base"
+            cp "${vcf}" "\$vcf_file"
+        fi
+
+        # Normalize chromosome names
+        awk 'BEGIN{OFS="\\t"}
+            /^#/ {print; next}
             {
-                # Normalize mitochondrial chromosome
                 if (\$1 == "chrMT" || \$1 == "MT") \$1 = "chrM"
-
-                # Add "chr" prefix to numeric or X/Y chromosomes if missing
                 if (\$1 !~ /^chr/) \$1 = "chr"\$1
-
                 print
-            }' ${vcf} > ${vcf.simpleName}.with_chr.vcf
+            }' "\$vcf_file" > "\${vcf_file}.with_chr.vcf"
 
-            mv ${vcf.simpleName}.with_chr.vcf ${vcf}
+        mv "\${vcf_file}.with_chr.vcf" "\$vcf_file"
 
         export REF_FASTA=/data/vep_data/reference_genome/${params.build}.fa
 
         perl /opt/vcf2maf.pl \
-            --input-vcf ${vcf} \
+            --input-vcf "\$vcf_file" \
             --output-maf ${meta.patient}.tmp.maf \
             --ref-fasta \$REF_FASTA \
             --inhibit-vep

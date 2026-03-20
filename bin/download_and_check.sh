@@ -45,7 +45,7 @@ echo "[INFO] Allowed tolerance: $TOLERANCE bytes"
 
 # Download file
 if [ "$METHOD" == "wget" ]; then
-    wget --no-check-certificate -c --tries=5 --timeout=30 "$URL" -O "$OUT"
+    wget --no-check-certificate -c --tries=5 --timeout=60 "$URL" -O "$OUT"
 elif [ "$METHOD" == "curl" ]; then
     curl -L --retry 5 --retry-delay 5 --retry-max-time 300 -o "$OUT" "$URL"
 else

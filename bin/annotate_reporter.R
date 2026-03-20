@@ -8,7 +8,7 @@
 COLUMN_CONFIG <- list(
   main = list(
     online = c(
-      "Hugo_Symbol",
+      "SYMBOL",
       "HGVSc",
       "genome_change",
       "HGVSp_Short",
@@ -23,7 +23,7 @@ COLUMN_CONFIG <- list(
       "Franklin"
     ),
     offline = c(
-      "Hugo_Symbol",
+      "SYMBOL",
       "HGVSc",
       "genome_change",
       "HGVSp_Short",

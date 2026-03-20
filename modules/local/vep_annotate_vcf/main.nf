@@ -17,7 +17,7 @@ process VEP_ANNOTATE_VCF {
         tuple val(meta), file(vcf)
 
     output:
-        tuple val(meta), file("${meta.patient}.variant_annotation.vcf")
+        tuple val(meta), file("${meta.patient}.vep.vcf")
 
     script:
         """
@@ -30,7 +30,7 @@ process VEP_ANNOTATE_VCF {
                 --format vcf \\
                 --fasta "/data/vep_data/reference_genome/${params.build}.fa" \\
                 --vcf \\
-                -o "${meta.patient}.variant_annotation.vcf" \\
+                -o "${meta.patient}.vep.vcf" \\
                 --offline \\
                 --assembly GRCh38 \\
                 --mane --pick --everything --fork ${params.n_core} \\
@@ -39,7 +39,6 @@ process VEP_ANNOTATE_VCF {
                 --plugin AncestralAllele,"/data/vep_data/AncestralAllele/homo_sapiens_ancestor_GRCh38.fa.gz" \\
                 --plugin CADD,snv="/data/vep_data/CADD/whole_genome_SNVs.tsv.gz" \\
                 --plugin ClinPred,file="/data/vep_data/ClinPred/ClinPred_${params.build}_sorted_tabbed.tsv.gz" \\
-                --plugin dbNSFP,"/data/vep_data/dbNSFP/dbNSFP5.2a_grch38.gz",ALL \\
                 --plugin dbscSNV,"/data/vep_data/dbscSNV/dbscSNV1.1_GRCh38.txt.gz" \\
                 --plugin Downstream \\
                 --plugin Enformer,file="/data/vep_data/Enformer/enformer_grch38.vcf.gz" \\
@@ -59,12 +58,12 @@ process VEP_ANNOTATE_VCF {
         else
             echo "Running VEP without plugins..."
             vep \\
-                -i $vcf \\
+                -i \$vcf \\
                 --dir_cache "/data/vep_data/vep_cache" --safe \\
                 --format vcf \\
                 --fasta "/data/vep_data/reference_genome/${params.build}.fa" \\
                 --vcf \\
-                -o "${meta.patient}.variant_annotation.vcf" \\
+                -o "${meta.patient}.vep.vcf" \\
                 --offline \\
                 --assembly GRCh38 \\
                 --mane --pick --everything --fork ${params.n_core} \\

@@ -18,37 +18,46 @@ process CLEAN_COLUMNS {
     output:
         tuple val(meta), file("${maf.baseName}.cleaned.maf")
 
-     script:
+    script:
     """
-        ls -lah
+    set -euo pipefail
 
-        # Columns to drop
-        cols_to_drop=('CHROM', 'REF', 'ALT', 'FILTER', 'Ensembl_geneid', 'POS' 'ID' 'Allele' 'HGVSp' 'MANE' 'TSL' 'APPRIS')
+    # Columns to drop outright.
+    # For columns that appear more than once (HGVSp, MANE, TSL, APPRIS),
+    # the dedup logic below automatically keeps the first occurrence
+    # and silently discards every subsequent one.
+    DROP="CHROM,VEP_canonical,REF,ALT,Ensembl_geneid,POS,ID,Allele,HGVSp,TSL,APPRIS"
 
-        # Read header line
-        header="\$(head -n1 ${maf})"
-
-        # Find positions of columns to keep
-        cols_to_keep=()
-        i=1
-        for col in \$(echo "\$header" | tr '\\t' '\\n'); do
-            skip=false
-            for drop in "\${cols_to_drop[@]}"; do
-                if [[ "\$col" == "\$drop" ]]; then
-                    skip=true
-                    break
-                fi
-            done
-            if ! \$skip; then
-                cols_to_keep+=("\$i")
-            fi
-            ((i++))
-        done
-
-        # Join positions into comma-separated string
-        cols_to_keep_str=\$(IFS=, ; echo "\${cols_to_keep[*]}")
-
-        # Extract only the columns to keep
-        cut -f\$cols_to_keep_str ${maf} > ${maf.baseName}.cleaned.maf
-        """
+    awk -F'\\t' -v OFS='\\t' -v drop_cols="\$DROP" '
+    BEGIN {
+        n = split(drop_cols, arr, ",")
+        for (i = 1; i <= n; i++) drop[arr[i]] = 1
+    }
+    NR == 1 {
+        for (i = 1; i <= NF; i++) {
+            col = \$i
+            gsub(/\r/, "", col)
+            # Skip if explicitly dropped, or already seen (keep first occurrence only)
+            if ((col in drop) || (col in seen)) {
+                keep[i] = 0
+            } else {
+                keep[i] = 1
+                seen[col] = 1
+            }
+        }
+    }
+    {
+        gsub(/\r/, "")
+        out = ""
+        sep = ""
+        for (i = 1; i <= NF; i++) {
+            if (keep[i]) {
+                out = out sep \$i
+                sep = OFS
+            }
+        }
+        print out
+    }
+    ' "${maf}" > "${maf.baseName}.cleaned.maf"
+    """
 }

@@ -13,15 +13,15 @@ process PARSE_VEP_ANNOTATION {
     memory { 8.GB * task.attempt }
 
     input:
-        tuple val(meta), file(vcf), file(maf)
+        tuple val(meta), file(vcf)
 
     output:
-        tuple val(meta), file("${meta.patient}.variant_annotation_parsed.txt"), file(maf)
+        tuple val(meta), file("${meta.patient}.vep_parsed.tsv")
 
     script:
         """
         input="${vcf}"
-        output="${meta.patient}.variant_annotation_parsed.txt"
+        output="${meta.patient}.vep_parsed.tsv"
 
     awk '
     BEGIN {
