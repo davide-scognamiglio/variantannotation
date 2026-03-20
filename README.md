@@ -18,7 +18,7 @@
 
 ## Introduction
 
-**MuSA (MUlti-Source variant Annotation)** is an nf-core-oriented Nextflow pipeline that provides a fully automated, end-to-end framework for variant interpretation.
+**MuSA (Multi-Source variant Annotation)** is an nf-core-oriented Nextflow pipeline that provides a fully automated, end-to-end framework for variant interpretation.
 Based on the findings in the sources, MuSA offers several innovations that distinguish it from, and in many aspects make is superior to, existing tools:
 Automated Resource Management: MuSA eliminates the manual effort and reproducibility issues
 inherent in standalone VEP or ANNOVAR workflows by fully automating the setup of annotation
